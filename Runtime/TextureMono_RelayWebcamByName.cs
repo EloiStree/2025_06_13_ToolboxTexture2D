@@ -43,6 +43,8 @@ namespace Eloi.TextureUtility {
                 {
                     m_texture.Play();
                 }
+                if (m_texture==null)
+                    return;
                 m_onWebcamTextureFound?.Invoke(m_texture);
             }
 
