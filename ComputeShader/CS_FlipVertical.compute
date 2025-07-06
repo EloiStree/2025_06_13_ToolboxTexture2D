@@ -1,10 +1,9 @@
 #pragma kernel CSMain
 
-Texture2D<float4> m_source; // Input texture
-RWTexture2D<float4> m_result; // Output texture
+RWTexture2D<uint4> m_source;
+RWTexture2D<uint4> m_result;
 int m_width;
 int m_height;
-int m_pixelCount;
 
 [numthreads(8, 8, 1)]
 void CSMain(uint3 id : SV_DispatchThreadID)
@@ -17,6 +16,6 @@ void CSMain(uint3 id : SV_DispatchThreadID)
         m_height - 1 - id.y
     );
 
-    float4 color = m_source.Load(int3(flippedCoord, 0));
-    m_result[id.xy] = color;
+    float4 pixel = m_source[id.xy];
+    m_result[flippedCoord] = pixel;
 }
