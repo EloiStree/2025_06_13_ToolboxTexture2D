@@ -1,9 +1,14 @@
 using UnityEngine.Events;
 
-namespace Eloi.TextureUtility
-{
+
+
+
     using Eloi.WatchAndDate;
     using UnityEngine;
+
+namespace Eloi.TextureUtility
+{
+
 
     public class TextureMono_CropRenderTexture : MonoBehaviour
     {

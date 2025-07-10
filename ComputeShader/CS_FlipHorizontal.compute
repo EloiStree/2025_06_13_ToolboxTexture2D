@@ -1,7 +1,7 @@
 #pragma kernel CSMain
 
-Texture2D<float4> m_source; // Input texture
-RWTexture2D<float4> m_result; // Output texture
+RWTexture2D<uint4> m_source;
+RWTexture2D<uint4> m_result;
 int m_width;
 int m_height;
 int m_pixelCount;

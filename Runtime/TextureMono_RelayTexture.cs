@@ -26,6 +26,17 @@ namespace Eloi.TextureUtility
             m_textureRelayed = texture;
             m_onTextureRelayed?.Invoke(texture);
         }
+
+        [ContextMenu("Replay Texture in Inspector")]
+        public void RelayCurrentTextureInInspector() { 
+            PushIn(m_textureRelayed);
+        }
     }
+
+}
+
+namespace Eloi.TextureUtility
+
+{
 
 }

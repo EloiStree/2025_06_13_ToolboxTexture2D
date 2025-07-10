@@ -1,7 +1,9 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Eloi.TextureUtility {
+
     public class TextureMono_RelayWebcamByName : MonoBehaviour
     {
         public string m_indexName;
@@ -16,7 +18,8 @@ namespace Eloi.TextureUtility {
             ResetTheWebcam();
         }
 
-        private void ResetTheWebcam()
+        [ContextMenu("Reset Webcam")]
+        public void ResetTheWebcam()
         {
             if (m_texture == null)
             {

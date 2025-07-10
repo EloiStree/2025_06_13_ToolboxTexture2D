@@ -18,6 +18,7 @@ namespace Eloi.PongTracking
         public void SetTexture(Texture texture)
         {
 
+            
             if (m_renderer == null || m_material == null)
             {
                 return;
