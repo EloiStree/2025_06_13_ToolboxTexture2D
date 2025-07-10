@@ -19,7 +19,12 @@ namespace Eloi.TextureUtility
             }
             else
             {
-                m_newRendererTexture = null;
+                if (m_newRendererTexture != null)
+                {
+                    m_newRendererTexture.Release();
+                    Destroy(m_newRendererTexture);
+                    m_newRendererTexture = null;
+                }
             }
         }
 
@@ -35,9 +40,19 @@ namespace Eloi.TextureUtility
                     m_newRendererTexture.Release();
                     Destroy(m_newRendererTexture);
                 }
-                
-                m_newRendererTexture = new RenderTexture(m_sourceRenderTexture.descriptor);
+
+                // create  new renderetexture exactly the same as source 
+                m_newRendererTexture = new RenderTexture(m_sourceRenderTexture.width, m_sourceRenderTexture.height, 0);
+                m_newRendererTexture.format = m_sourceRenderTexture.format;
+                m_newRendererTexture.useMipMap = m_sourceRenderTexture.useMipMap;
+                m_newRendererTexture.autoGenerateMips = m_sourceRenderTexture.autoGenerateMips;
+                m_newRendererTexture.wrapMode = m_sourceRenderTexture.wrapMode;
+                m_newRendererTexture.filterMode = m_sourceRenderTexture.filterMode;
+                m_newRendererTexture.anisoLevel = m_sourceRenderTexture.anisoLevel;
+                m_newRendererTexture.dimension = m_sourceRenderTexture.dimension;
+                m_newRendererTexture.volumeDepth = m_sourceRenderTexture.volumeDepth;
                 m_newRendererTexture.enableRandomWrite = true;
+
                 m_newRendererTexture.Create();
                 m_onNewFlippedTextureCreated?.Invoke(m_newRendererTexture);
             }
@@ -46,11 +61,12 @@ namespace Eloi.TextureUtility
 
         public void Update()
         {
-            if (m_useUpdateToRefresh)   
+            if (m_useUpdateToRefresh)
             {
                 Refresh();
             }
         }
+
         [ContextMenu("Refresh")]
         public void Refresh()
         {
@@ -66,7 +82,6 @@ namespace Eloi.TextureUtility
 
             int kernel = m_shaderToApply.FindKernel("CSMain");
 
-
             // Set compute shader parameters
             m_shaderToApply.SetTexture(kernel, "m_source", m_sourceRenderTexture);
             m_shaderToApply.SetTexture(kernel, "m_result", m_newRendererTexture);
@@ -78,10 +93,16 @@ namespace Eloi.TextureUtility
             int threadGroupsX = Mathf.CeilToInt(width / 8f);
             int threadGroupsY = Mathf.CeilToInt(height / 8f);
             m_shaderToApply.Dispatch(kernel, threadGroupsX, threadGroupsY, 1);
+        }
 
-            // Optional: assign result to a material to visualize
-            if (TryGetComponent<Renderer>(out var renderer))
-                renderer.material.mainTexture = m_newRendererTexture;
+        private void OnDestroy()
+        {
+            if (m_newRendererTexture != null)
+            {
+                m_newRendererTexture.Release();
+                Destroy(m_newRendererTexture);
+                m_newRendererTexture = null;
+            }
         }
     }
 }

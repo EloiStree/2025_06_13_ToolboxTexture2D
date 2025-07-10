@@ -2,6 +2,7 @@ using UnityEngine.Events;
 
 namespace Eloi.TextureUtility
 {
+    using Eloi.WatchAndDate;
     using UnityEngine;
 
     public class TextureMono_CropRenderTexture : MonoBehaviour
@@ -14,11 +15,14 @@ namespace Eloi.TextureUtility
 
         public RenderTexture m_cropped; 
         public UnityEvent<RenderTexture> m_onNewCroppedTextureCreated;
+        public UnityEvent<RectInt> m_onNewCroppedTextureCreatedRectInt;
         private int m_currentWidth = -1;
         private int m_currentHeight = -1;
 
+        public WatchAndDateTimeActionResult m_timeToProcess = new WatchAndDateTimeActionResult();
         void Update()
         {
+            m_timeToProcess.StartCounting();
             EnsureCroppedRenderTexture();
 
             // Copy subregion from sourceRT to croppedRT
@@ -27,8 +31,29 @@ namespace Eloi.TextureUtility
                 Graphics.CopyTexture(m_toCrop, 0, 0, m_cropLeftRightX, m_cropDownTopY, m_cropWidth, m_cropHeight,
                                      m_cropped, 0, 0, 0, 0);
             }
+            m_timeToProcess.StopCounting();
         }
 
+        public void SetRectangle(Rect rect)
+        {
+            m_cropLeftRightX = Mathf.RoundToInt(rect.xMin);
+            m_cropDownTopY = Mathf.RoundToInt(rect.yMin);
+            m_cropWidth = Mathf.RoundToInt(rect.width);
+            m_cropHeight = Mathf.RoundToInt(rect.height);
+            EnsureCroppedRenderTexture();
+            m_onNewCroppedTextureCreatedRectInt.Invoke(new RectInt(m_cropLeftRightX, m_cropDownTopY, m_cropWidth, m_cropHeight));
+        }
+
+        public void SetRectangle(RectInt rectInt)
+        {
+            m_cropLeftRightX = rectInt.xMin;
+            m_cropDownTopY = rectInt.yMin;
+            m_cropWidth = rectInt.width;
+            m_cropHeight = rectInt.height;
+            EnsureCroppedRenderTexture();
+            m_onNewCroppedTextureCreatedRectInt.Invoke(rectInt);
+        }
+            
 
         public void SetRenderTexture(RenderTexture renderTexture) {
 
