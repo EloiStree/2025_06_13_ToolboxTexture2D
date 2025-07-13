@@ -1,8 +1,7 @@
+using System;
 using Eloi.TextureUtility;
 using UnityEngine;
 using UnityEngine.Events;
-
-
 
 public class TextureMono_ComputeFilterAndOrRGB : MonoBehaviour
 {
