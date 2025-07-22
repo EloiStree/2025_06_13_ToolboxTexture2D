@@ -29,28 +29,31 @@ namespace Eloi.TextureUtility
 
             if (texture != null)
             {
-                if (m_renderTextureCreated == null ||
-                    m_renderTextureCreated.width != texture.width ||
-                    m_renderTextureCreated.height != texture.height)
-                {
-                    if (m_renderTextureCreated != null)
-                    {
-                        m_renderTextureCreated.Release();
-                    }
-
-                    m_renderTextureCreated = new RenderTexture(texture.width, texture.height, 0, RenderTextureFormat.ARGB32);
-                    m_renderTextureCreated.enableRandomWrite = true;
-                    m_renderTextureCreated.wrapMode = TextureWrapMode.Clamp;
-                    m_renderTextureCreated.filterMode = FilterMode.Point;
-                    m_renderTextureCreated.Create();
-                }
+                CheckIfChanged(texture);
 
                 Graphics.Blit(texture, m_renderTextureCreated);
                 m_onTextureRelayed?.Invoke(m_renderTextureCreated);
             }
         }
 
+        private void CheckIfChanged(Texture texture)
+        {
+            if (m_renderTextureCreated == null ||
+                m_renderTextureCreated.width != texture.width ||
+                m_renderTextureCreated.height != texture.height)
+            {
+                if (m_renderTextureCreated != null)
+                {
+                    m_renderTextureCreated.Release();
+                }
 
+                m_renderTextureCreated = new RenderTexture(texture.width, texture.height, 0, RenderTextureFormat.ARGB32);
+                m_renderTextureCreated.enableRandomWrite = true;
+                m_renderTextureCreated.wrapMode = TextureWrapMode.Clamp;
+                m_renderTextureCreated.filterMode = FilterMode.Point;
+                m_renderTextureCreated.Create();
+            }
+        }
 
         public void PushIn(Texture2D texture)
         {

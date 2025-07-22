@@ -2,8 +2,8 @@ using UnityEngine;
 using UnityEngine.Events;
 
 namespace Eloi.TextureUtility 
-
 {
+
     public class TextureMono_RelayTexture : MonoBehaviour {
 
         public Texture m_textureRelayed;

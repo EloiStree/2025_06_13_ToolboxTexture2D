@@ -7,28 +7,36 @@ namespace Eloi.TextureUtility {
         public WebCamTexture m_selected;
         public RenderTexture m_result;
         public UnityEvent<RenderTexture> m_onRenderTextureCreated;
+        public UnityEvent<RenderTexture> m_onRenderTextureBlit;
         public void PushInWebcamTexture(WebCamTexture texture) {
 
             m_selected = texture;
             if (m_selected != null)
             {
-                if (m_result == null || texture.width != m_result.width || texture.height != m_result.height) { 
-                
-                    if(m_result != null) 
-                        m_result.Release();
-
-                    m_result = new RenderTexture(texture.width, texture.height, 0);
-                    m_result.enableRandomWrite = true;
-                    m_result.filterMode = FilterMode.Point;
-                    m_result.wrapMode = TextureWrapMode.Clamp;
-
-                    m_result.Create();
-                    m_onRenderTextureCreated.Invoke(m_result);
-
-                    
-                }
+                CheckForChange(texture);
             }
         }
+
+        private void CheckForChange(Texture texture)
+        {
+            if (m_result == null || texture.width != m_result.width || texture.height != m_result.height)
+            {
+
+                if (m_result != null)
+                    m_result.Release();
+
+                m_result = new RenderTexture(texture.width, texture.height, 0);
+                m_result.enableRandomWrite = true;
+                m_result.filterMode = FilterMode.Point;
+                m_result.wrapMode = TextureWrapMode.Clamp;
+
+                m_result.Create();
+                m_onRenderTextureCreated.Invoke(m_result);
+
+
+            }
+        }
+
         public bool m_useUpdateBlit = true;
 
         public void Update()
@@ -37,6 +45,7 @@ namespace Eloi.TextureUtility {
             if (!m_useUpdateBlit)
                 return;
 
+
             BlitTexture();
         }
 
@@ -44,8 +53,11 @@ namespace Eloi.TextureUtility {
         {
             if ( m_selected && m_result)
             {
-            Graphics.Blit(m_selected, m_result);
-                
+                CheckForChange(m_result);
+                Graphics.Blit(m_selected, m_result);
+                m_onRenderTextureBlit.Invoke(m_result);
+
+
             }
 
         }

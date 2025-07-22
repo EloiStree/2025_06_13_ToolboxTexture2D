@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 namespace Eloi.TextureUtility {
-    public class TextureMono_RenderTextureToFileSaveWithDate : MonoBehaviour
+    public class TextureMono_RenderTextureToFileRelativeSaveWithDate : MonoBehaviour
     {
 
         public RenderTexture m_renderTexture;
@@ -56,6 +56,8 @@ namespace Eloi.TextureUtility {
         [ContextMenu("Save as TGA")]
         public void SaveAsTGA()
         {
+            if (m_renderTexture == null || m_renderTexture.width < 1)
+                return;
             Texture2D texture = new Texture2D(m_width, m_height, TextureFormat.RGB24, m_mipmap, m_linear);
             RenderTexture.active = m_renderTexture;
             texture.ReadPixels(new Rect(0, 0, m_width, m_height), 0, 0);
@@ -71,8 +73,9 @@ namespace Eloi.TextureUtility {
         }
         [ContextMenu("Save as JPEG")]
         public void SaveAsJPEG() {
+            if (m_renderTexture == null || m_renderTexture.width < 1)
+                return;
 
-           
             Texture2D texture = new Texture2D(m_width, m_height, TextureFormat.RGB24,m_mipmap,m_linear );
             RenderTexture.active = m_renderTexture;
             texture.ReadPixels(new Rect(0, 0, m_width, m_height), 0, 0);
@@ -90,6 +93,8 @@ namespace Eloi.TextureUtility {
         [ContextMenu("Save as PNG")]
         public void SaveAsPNG()
         {
+            if (m_renderTexture == null || m_renderTexture.width < 1)
+                return;
             Texture2D texture = new Texture2D(m_width, m_height, TextureFormat.RGB24, m_mipmap, m_linear);
             RenderTexture.active = m_renderTexture;
             texture.ReadPixels(new Rect(0, 0, m_width, m_height), 0, 0);
@@ -106,8 +111,9 @@ namespace Eloi.TextureUtility {
         }
 
         [ContextMenu("Save as Color32")]
-        public void SaveAsColor32() { 
-        
+        public void SaveAsColor32() {
+            if (m_renderTexture == null || m_renderTexture.width < 1)
+                return;
             byte[] bytes = new byte[m_bytesCountsRGB+8];
             int width = m_width;
             int height = m_height;
