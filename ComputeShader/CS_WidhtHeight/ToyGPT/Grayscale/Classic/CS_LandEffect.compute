@@ -1,0 +1,19 @@
+#pragma kernel CSMain
+
+RWTexture2D<float4> m_source;
+RWTexture2D<float4> m_result;
+
+int m_width;
+int m_height;
+
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= m_width || id.y >= m_height)
+        return;
+
+    float4 color = m_source[id.xy];
+    float gray = dot(color.rgb, float3(0.299, 0.587, 0.114));
+    float4 fragColor = float4(gray, gray, gray, color.a);
+    m_result[id.xy] = fragColor;
+}
