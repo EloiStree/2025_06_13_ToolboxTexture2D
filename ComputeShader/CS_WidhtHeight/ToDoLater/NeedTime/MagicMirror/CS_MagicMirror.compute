@@ -1,24 +1,15 @@
 // Each compute shader file in Unity starts with defining the kernel
 #pragma kernel CSMain
-
-// Define the textures and parameters
 RWTexture2D<float4> m_source;
 RWTexture2D<float4> m_result;
 int m_width;
 int m_height;
 float m_time;
-
-// Define the kernel function
 [numthreads(8, 8, 1)]
 void CSMain(uint3 id : SV_DispatchThreadID)
 {
-    // Normalize the coordinates
     float2 uv = float2(id.x / m_width, id.y / m_height);
-
-    // Sample the source texture
     float4 fragColor = m_source[id.xy];
-
-    // Define transformation matrices
     float3x3 to_yuvish = float3x3(0.299, -0.14713, 0.615,
                                   0.587, -0.28886, -0.51499,
                                   0.114, 0.436, -0.10001);
@@ -26,23 +17,15 @@ void CSMain(uint3 id : SV_DispatchThreadID)
                                      0.0, -0.39465, 2.03211,
                                      1.13983, -0.58060, 0.0);
 
-    // Calculate rotation amount
     float rot_amount = smoothstep(0.2, 0.6, 0.95 * length(fragColor.rgb)) *
                        smoothstep(1.0, 0.6, 0.95 * length(fragColor.rgb));
     rot_amount *= 6.0 * sin(12.0 * m_time + 100.0 * length(fragColor.rgb));
 
-    // Calculate sine and cosine of the rotation amount
     float stheta = sin(rot_amount);
     float ctheta = cos(rot_amount);
-
-    // Define rotation matrix
     float3x3 rot = float3x3(1.0, 0.0, 0.0,
                              0.0, ctheta, -stheta,
                              0.0, stheta, ctheta);
-
-    // Apply transformations
-    fragColor.rgb = mul(from_yuvish, mul(rot, mul(to_yuvish, smoothstep(0.3, 0.7, fragColor.rgb))));
-
-    // Write the result to the output texture
+    fragColor.rgb = mul(from_yuvish, mul(rot, mul(to_yuvish, smoothstep(0.3, 0.7, fragColor.rgb))));    
     m_result[id.xy] = fragColor;
 }
