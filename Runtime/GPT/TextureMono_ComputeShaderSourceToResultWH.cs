@@ -81,6 +81,11 @@ namespace Eloi.TextureUtility
             m_computeShaderToApply.SetTexture(kernelIndex, "m_result", m_result);
             m_computeShaderToApply.SetInt("m_width", m_source.width);
             m_computeShaderToApply.SetInt("m_height", m_source.height);
+
+            try {
+                m_computeShaderToApply.SetFloat("m_time", Time.timeSinceLevelLoad);
+            }
+            catch (Exception) { }
             m_computeShaderToApply.SetInt("m_pixelCount", m_source.width * m_source.height);
 
 

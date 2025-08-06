@@ -5,6 +5,7 @@ RWTexture2D<float4> m_result;
 
 int m_width;
 int m_height;
+float m_time;
 
 #define FILTER 5          // Choose from 0-5
 #define STEP 0.005        // Filter convolution step
