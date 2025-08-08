@@ -26,6 +26,11 @@ namespace Eloi.TextureUtility
             m_source = CheckForChange(m_source);
         }
 
+        public void SetComputeShaderToUse(ComputeShader shader) { 
+        
+            m_computeShaderToApply = shader;
+        }
+
         private RenderTexture CheckForChange(RenderTexture source)
         {
             RenderTextureUtility.CheckThatTextureIsSameSize(ref source, out bool changed, ref m_result);
@@ -61,7 +66,7 @@ namespace Eloi.TextureUtility
             if (m_useUpdate)
                 ComputeTheTexture();
         }
-
+        public bool m_ignoreException;
         public void ComputeTheTexture()
         {
             if (!gameObject.activeInHierarchy)
@@ -93,7 +98,16 @@ namespace Eloi.TextureUtility
             int threadGroupsX = Mathf.CeilToInt(m_source.width / 8.0f);
             int threadGroupsY = Mathf.CeilToInt(m_source.height / 8.0f);
 
-            m_computeShaderToApply.Dispatch(kernelIndex, threadGroupsX, threadGroupsY, 1);
+            if (m_ignoreException)
+            {
+
+                   try {
+                        m_computeShaderToApply.Dispatch(kernelIndex, threadGroupsX, threadGroupsY, 1);
+                    }
+                    catch (Exception) { 
+                    }
+            }
+            
             m_result.Create();
             m_computeTime.StopCounting();
             m_onUpdated.Invoke(m_result);
