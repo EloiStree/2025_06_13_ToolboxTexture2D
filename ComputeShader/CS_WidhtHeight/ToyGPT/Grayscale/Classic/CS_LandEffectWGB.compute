@@ -6,6 +6,9 @@ RWTexture2D<float4> m_result;
 int m_width;
 int m_height;
 
+#define black 0.5
+#define white 0.75
+
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
@@ -15,5 +18,13 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float4 color = m_source[id.xy];
     float gray = dot(color.rgb, float3(0.299, 0.587, 0.114));
     float4 fragColor = float4(gray, gray, gray, color.a);
-    m_result[id.xy] = fragColor;
+    
+    
+    if (gray < black)
+        m_result[id.xy] = float4(0, 0, 0, 1);
+    else if (gray > white)
+        m_result[id.xy] = float4(1, 1, 1, 1);
+    else 
+        //m_result[id.xy] = fragColor;
+        m_result[id.xy] = float4(1,0,0,1);
 }

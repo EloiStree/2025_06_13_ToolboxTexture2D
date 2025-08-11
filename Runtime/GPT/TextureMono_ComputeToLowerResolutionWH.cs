@@ -1,6 +1,5 @@
 
 using System;
-using System.Linq;
 using Eloi.WatchAndDate;
 using UnityEngine.Events;
 
@@ -9,8 +8,7 @@ using UnityEngine;
 
 namespace Eloi.TextureUtility
 {
-
-    public class TextureMono_ComputeShaderSourceToResultWH : MonoBehaviour , I_PushRenderTextureToApply
+    public class TextureMono_ComputeToLowerResolutionWH : MonoBehaviour, I_PushRenderTextureToApply
     {
 
         public ComputeShader m_computeShaderToApply;
@@ -28,8 +26,9 @@ namespace Eloi.TextureUtility
             m_source = CheckForChange(m_source);
         }
 
-        public void SetComputeShaderToUse(ComputeShader shader) { 
-        
+        public void SetComputeShaderToUse(ComputeShader shader)
+        {
+
             m_computeShaderToApply = shader;
         }
 
@@ -52,18 +51,19 @@ namespace Eloi.TextureUtility
             SetTextureToUseAndCompute(m_source);
         }
 
-        void OnEnable() {
+        void OnEnable()
+        {
 
             if (!enabled)
                 return;
             if (m_useOnEnable)
                 ComputeTheTexture();
-            
+
         }
 
         private void Update()
         {
-            if (!enabled )
+            if (!enabled)
                 return;
             if (m_useUpdate)
                 ComputeTheTexture();
@@ -89,7 +89,8 @@ namespace Eloi.TextureUtility
             m_computeShaderToApply.SetInt("m_width", m_source.width);
             m_computeShaderToApply.SetInt("m_height", m_source.height);
 
-            try {
+            try
+            {
                 m_computeShaderToApply.SetFloat("m_time", Time.timeSinceLevelLoad);
             }
             catch (Exception) { }
@@ -111,12 +112,8 @@ namespace Eloi.TextureUtility
                 {
                 }
             }
-            else {
 
-                m_computeShaderToApply.Dispatch(kernelIndex, threadGroupsX, threadGroupsY, 1);
-            }
-
-                m_result.Create();
+            m_result.Create();
             m_computeTime.StopCounting();
             m_onUpdated.Invoke(m_result);
         }

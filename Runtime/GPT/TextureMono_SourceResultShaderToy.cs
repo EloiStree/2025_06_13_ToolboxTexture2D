@@ -1,35 +1,70 @@
 
 using System;
-using System.Linq;
 using Eloi.WatchAndDate;
 using UnityEngine.Events;
 
-using UnityEngine;
-
-
 namespace Eloi.TextureUtility
 {
+    using UnityEngine;
 
-    public class TextureMono_ComputeShaderSourceToResultWH : MonoBehaviour , I_PushRenderTextureToApply
+    public class TextureMono_SourceResultShaderToy : MonoBehaviour, I_PushRenderTextureToApply
     {
 
         public ComputeShader m_computeShaderToApply;
         public RenderTexture m_source;
+        public RenderTexture m_channel1;
         public RenderTexture m_result;
         public UnityEvent<RenderTexture> m_onCreated;
         public UnityEvent<RenderTexture> m_onUpdated;
         public WatchAndDateTimeActionResult m_computeTime;
+        public float m_mousePercentX;
+        public float m_mousePercentY;
+        public float[] m_sounds= new float[0];
+        public float m_time=0;
+        public bool m_useUnityTime = true;
 
         public bool m_useUpdate = false;
         public bool m_useOnEnable = true;
+
+        [Header("Debug")]
+        public Vector2Int m_mousePositionXY;
         public void SetTextureToUse(RenderTexture source)
         {
             m_source = source;
             m_source = CheckForChange(m_source);
         }
 
-        public void SetComputeShaderToUse(ComputeShader shader) { 
+        public void SetTextureChannel1(RenderTexture channel1) { 
         
+            m_channel1 = channel1;
+        }
+
+
+        public void SetTimeInSeconds(float timeInSeconds) { 
+        
+            m_time = timeInSeconds;
+        }
+        public void SetSound(float[] soundsAsFloatArray) {
+            m_sounds = soundsAsFloatArray;
+        }
+
+        public void SetMouseInfoAsPixel(Vector2Int mouseInfo)
+        {
+            m_mousePositionXY = mouseInfo;
+            m_mousePercentX = mouseInfo.x / m_source.width;
+            m_mousePercentY = mouseInfo.y / m_source.height;
+        }
+        public void SetMouseInfoAsPercentOfTexture(Vector2 mouseInfo)
+        {
+            m_mousePercentX = mouseInfo.x;
+            m_mousePercentY = mouseInfo.y;
+            m_mousePositionXY = new Vector2Int( (int)(m_mousePercentX * m_source.width), (int)(m_mousePercentY * m_source.height) );
+        }
+
+
+        public void SetComputeShaderToUse(ComputeShader shader)
+        {
+
             m_computeShaderToApply = shader;
         }
 
@@ -52,18 +87,20 @@ namespace Eloi.TextureUtility
             SetTextureToUseAndCompute(m_source);
         }
 
-        void OnEnable() {
+        void OnEnable()
+        {
 
             if (!enabled)
                 return;
             if (m_useOnEnable)
                 ComputeTheTexture();
-            
+
         }
 
         private void Update()
+
         {
-            if (!enabled )
+            if (!enabled)
                 return;
             if (m_useUpdate)
                 ComputeTheTexture();
@@ -89,10 +126,31 @@ namespace Eloi.TextureUtility
             m_computeShaderToApply.SetInt("m_width", m_source.width);
             m_computeShaderToApply.SetInt("m_height", m_source.height);
 
-            try {
-                m_computeShaderToApply.SetFloat("m_time", Time.timeSinceLevelLoad);
+            if (m_useUnityTime)
+                m_time = Time.time;
+            try
+            {
+                m_computeShaderToApply.SetFloat("m_time", m_time);
             }
             catch (Exception) { }
+            try
+            {
+                m_computeShaderToApply.SetInt("m_mousePixelX", m_mousePositionXY.x);
+            }
+            catch (Exception) { }
+
+            try
+            {
+                m_computeShaderToApply.SetInt("m_mousePixelY", m_mousePositionXY.x);
+            }
+            catch (Exception) { }
+            try
+            {
+                m_computeShaderToApply.SetInt("m_channel1", m_mousePositionXY.x);
+            }
+            catch (Exception) { }
+            
+
             m_computeShaderToApply.SetInt("m_pixelCount", m_source.width * m_source.height);
 
 
@@ -111,12 +169,8 @@ namespace Eloi.TextureUtility
                 {
                 }
             }
-            else {
 
-                m_computeShaderToApply.Dispatch(kernelIndex, threadGroupsX, threadGroupsY, 1);
-            }
-
-                m_result.Create();
+            m_result.Create();
             m_computeTime.StopCounting();
             m_onUpdated.Invoke(m_result);
         }

@@ -6,13 +6,18 @@ namespace Eloi.TextureUtility {
 
     public class TextureMono_RelayWebcamByName : MonoBehaviour
     {
-        public string m_indexName;
+        public string [] m_nameOfWebcamsToUse;
         public bool m_ignoreCase=true;
         public bool m_exactName=false;
 
         public WebCamTexture m_texture;
         public UnityEvent<WebCamTexture> m_onWebcamTextureFound;
         public bool m_autoStartTheWebcam = true;
+
+
+        public bool m_useDefaultWebcamIfNotFound;
+        public int m_defaultWebcamIfNotFound = 0;
+
         public void OnEnable()
         {
             ResetTheWebcam();
@@ -57,7 +62,8 @@ namespace Eloi.TextureUtility {
 
         private void FindDevice(out bool found, out WebCamDevice device)
         {
-            string toLookFor = m_indexName.Trim();
+            foreach (string name in m_nameOfWebcamsToUse) { 
+            string toLookFor = name.Trim();
             if ( m_ignoreCase)
             {
                 toLookFor = toLookFor.ToLower();
@@ -93,6 +99,24 @@ namespace Eloi.TextureUtility {
             }
 
             found = false;
+            device = default;
+            return;
+            }
+
+
+
+
+            if (m_useDefaultWebcamIfNotFound) {
+
+                if (m_defaultWebcamIfNotFound < WebCamTexture.devices.Length) {
+                            WebCamDevice deviceIndex = WebCamTexture.devices[m_defaultWebcamIfNotFound];
+                            found = true;
+                            device = deviceIndex;
+                            return;
+                }
+            }
+
+        found = false;
             device = default;
             return;
         }

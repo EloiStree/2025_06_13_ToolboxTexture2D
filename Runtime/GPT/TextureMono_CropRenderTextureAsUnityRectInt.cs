@@ -3,14 +3,14 @@ using UnityEngine.Events;
 
 
 
-    using Eloi.WatchAndDate;
-    using UnityEngine;
+using Eloi.WatchAndDate;
+using UnityEngine;
 
 namespace Eloi.TextureUtility
 {
 
 
-    public class TextureMono_CropRenderTexture : MonoBehaviour
+    public class TextureMono_CropRenderTextureAsUnityRectInt : MonoBehaviour
     {
         public RenderTexture m_toCrop;
         public int m_cropLeftRightX = 0;

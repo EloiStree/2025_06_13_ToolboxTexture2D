@@ -17,6 +17,20 @@ namespace Eloi.TextureUtility {
             }
         }
 
+
+
+        public bool m_useUpdateBlit = true;
+
+        public void Update()
+        {
+
+            if (!m_useUpdateBlit)
+                return;
+
+
+            BlitTexture();
+        }
+
         private void CheckForChange(Texture texture)
         {
             if (m_result == null || texture.width != m_result.width || texture.height != m_result.height)
@@ -35,18 +49,6 @@ namespace Eloi.TextureUtility {
 
 
             }
-        }
-
-        public bool m_useUpdateBlit = true;
-
-        public void Update()
-        {
-
-            if (!m_useUpdateBlit)
-                return;
-
-
-            BlitTexture();
         }
 
         private void BlitTexture()

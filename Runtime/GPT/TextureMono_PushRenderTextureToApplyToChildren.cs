@@ -38,6 +38,19 @@ namespace Eloi.TextureUtility
                 RefreshTheList();
         }
 
+
+        [ContextMenu("Set with Insepector")]
+        public void SetTextureToUseWithInspector()
+        {
+            SetTextureToUse(m_lastReceived);
+        }
+        [ContextMenu("Set with Insepector Compute")]
+        public void SetTextureToUseAndComputeWithInspector()
+        {
+            SetTextureToUseAndCompute(m_lastReceived);
+        }
+
+
         public void SetTextureToUse(RenderTexture texture)
         {
             m_lastReceived = texture;

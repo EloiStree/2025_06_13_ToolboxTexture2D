@@ -6,8 +6,8 @@ RWTexture2D<float4> m_result;
 int m_width;
 int m_height;
 
-#define FILTER 5          // Choose from 0-5
-#define STEP 0.005        // Filter convolution step
+#define STEP 0.06
+//#define STEP 0.005       
 #define BOT (1.0 - STEP)
 #define TOP (1.0 + STEP)
 #define CEN 1.0
