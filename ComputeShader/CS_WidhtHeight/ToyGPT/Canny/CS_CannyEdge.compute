@@ -9,8 +9,8 @@ int m_width;
 int m_height;
 float m_time;
 
-#define m_mouse float2(20,20)
-#define m_thickness 4
+#define m_mouse float2(2000,20)
+#define m_thickness 6
 
 
 
